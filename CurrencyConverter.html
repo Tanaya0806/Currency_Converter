@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currency Converter</title>
+<style>
+:root {
+  --bg-gradient: linear-gradient(135deg, #6a11cb, #2575fc);
+  --card-bg: #fff;
+  --text-color: #333;
+  --input-bg: #fff;
+  --btn-bg: #2575fc;
+  --btn-hover: #1746a2;
+}
+[data-theme="dark"] {
+  --bg-gradient: linear-gradient(135deg, #1e1e2f, #121212);
+  --card-bg: #2a2a3d;
+  --text-color: #f5f5f5;
+  --input-bg: #3a3a4d;
+  --btn-bg: #6a11cb;
+  --btn-hover: #4b0f91;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-gradient);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  transition: background 0.5s ease;
+  position: relative;
+}
+/* Floating currency symbols background */
+.currency-bg {
+  position: absolute;
+  font-size: 60px;
+  color: rgba(255,255,255,0.1);
+  font-weight: bold;
+  animation: float 12s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 0;
+}
+.currency-bg:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+.currency-bg:nth-child(2) { top: 30%; right: 20%; animation-delay: 2s; }
+.currency-bg:nth-child(3) { bottom: 20%; left: 10%; animation-delay: 4s; }
+.currency-bg:nth-child(4) { bottom: 15%; right: 15%; animation-delay: 6s; }
+.currency-bg:nth-child(5) { top: 50%; left: 45%; animation-delay: 8s; }
+@keyframes float {
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-20px);}
+}
+/* Converter card */
+.converter {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
+  width: 380px;
+  text-align: center;
+  transition: transform 0.3s ease, background 0.5s, color 0.5s;
+  position: relative;
+  z-index: 2;
+  color: var(--text-color);
+}
+.converter:hover {
+  transform: scale(1.05);
+}
+h2 {
+  margin-bottom: 20px;
+}
+.input-group {
+  position: relative;
+  margin: 10px 0;
+  width: 100%;
+}
+.currency-symbol {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #888;
+}
+input, select {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  background: var(--input-bg);
+  color: var(--text-color);
+  transition: border 0.3s, background 0.5s, color 0.5s;
+  box-sizing: border-box;
+}
+input { padding-left: 35px; }
+select option { background:#fff; color:#000; }
+select:focus,input:focus{border:1px solid var(--btn-bg);}
+button {
+  background: var(--btn-bg);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+button:hover { background: var(--btn-hover);}
+.swap-btn {
+  background: #6a11cb;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px auto;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.swap-btn:hover { background:#4b0f91; transform:rotate(180deg);}
+.result {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  background: #f1f1f1;
+  padding: 10px;
+  border-radius: 10px;
+  color: #333;
+  animation: fadeIn 0.8s ease;
+}
+[data-theme="dark"] .result { background:#444; color:#f1f1f1;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+/* Dark/Light toggle */
+.theme-toggle {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  background: var(--btn-bg);
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s, transform 0.3s;
+}
+.theme-toggle:hover { background: var(--btn-hover); transform: scale(1.1); }
+/* Responsive */
+@media(max-width:450px){
+  .converter { width: 90%; padding: 20px; }
+  .theme-toggle { font-size: 12px; padding: 5px 8px;}
+}
+</style>
+</head>
+<body data-theme="light">
+
+<!-- Floating symbols -->
+<div class="currency-bg">$</div>
+<div class="currency-bg">€</div>
+<div class="currency-bg">₹</div>
+<div class="currency-bg">£</div>
+<div class="currency-bg">¥</div>
+
+<div class="converter">
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+<h2>Currency Converter</h2>
+
+<div class="input-group">
+<span class="currency-symbol" id="currencySymbol">$</span>
+<input type="number" id="amount" placeholder="Enter amount" min="0">
+</div>
+
+<select id="fromCurrency" onchange="updateSymbol()">
+  <option value="USD" data-symbol="$">🇺🇸 USD - US Dollar</option>
+  <option value="EUR" data-symbol="€">🇪🇺 EUR - Euro</option>
+  <option value="INR" data-symbol="₹">🇮🇳 INR - Indian Rupee</option>
+  <option value="GBP" data-symbol="£">🇬🇧 GBP - British Pound</option>
+  <option value="JPY" data-symbol="¥">🇯🇵 JPY - Japanese Yen</option>
+  <option value="CAD" data-symbol="$">🇨🇦 CAD - Canadian Dollar</option>
+  <option value="AUD" data-symbol="$">🇦🇺 AUD - Australian Dollar</option>
+  <option value="CHF" data-symbol="₣">🇨🇭 CHF - Swiss Franc</option>
+  <option value="SGD" data-symbol="$">🇸🇬 SGD - Singapore Dollar</option>
+  <option value="AED" data-symbol="د.إ">🇦🇪 AED - UAE Dirham</option>
+  <option value="CNY" data-symbol="¥">🇨🇳 CNY - Chinese Yuan</option>
+</select>
+
+<div class="swap-btn" onclick="swapCurrencies()">&#8646;</div>
+
+<select id="toCurrency">
+  <option value="INR" data-symbol="₹">🇮🇳 INR - Indian Rupee</option>
+  <option value="USD" data-symbol="$">🇺🇸 USD - US Dollar</option>
+  <option value="EUR" data-symbol="€">🇪🇺 EUR - Euro</option>
+  <option value="GBP" data-symbol="£">🇬🇧 GBP - British Pound</option>
+  <option value="JPY" data-symbol="¥">🇯🇵 JPY - Japanese Yen</option>
+  <option value="CAD" data-symbol="$">🇨🇦 CAD - Canadian Dollar</option>
+  <option value="AUD" data-symbol="$">🇦🇺 AUD - Australian Dollar</option>
+  <option value="CHF" data-symbol="₣">🇨🇭 CHF - Swiss Franc</option>
+  <option value="SGD" data-symbol="$">🇸🇬 SGD - Singapore Dollar</option>
+  <option value="AED" data-symbol="د.إ">🇦🇪 AED - UAE Dirham</option>
+  <option value="CNY" data-symbol="¥">🇨🇳 CNY - Chinese Yuan</option>
+</select>
+
+<button onclick="convertCurrency()">Convert</button>
+<div class="result" id="result">Converted amount will appear here</div>
+</div>
+
+<script>
+const symbols = {"USD":"$","EUR":"€","INR":"₹","GBP":"£","JPY":"¥","CAD":"$","AUD":"$","CHF":"₣","SGD":"$","AED":"د.إ","CNY":"¥"};
+const exchangeRates = {
+  "USD":{"INR":83,"EUR":0.92,"GBP":0.79,"JPY":148,"CAD":1.36,"AUD":1.52,"CHF":0.9,"SGD":1.37,"AED":3.67,"CNY":7.3,"USD":1},
+  "INR":{"USD":0.012,"EUR":0.011,"GBP":0.0095,"JPY":1.78,"CAD":0.016,"AUD":0.018,"CHF":0.011,"SGD":0.016,"AED":0.044,"CNY":0.088,"INR":1},
+  "EUR":{"USD":1.09,"INR":90,"GBP":0.86,"JPY":160,"CAD":1.48,"AUD":1.65,"CHF":0.98,"SGD":1.49,"AED":3.98,"CNY":7.9,"EUR":1},
+  "GBP":{"USD":1.27,"INR":105,"EUR":1.16,"JPY":185,"CAD":1.72,"AUD":1.91,"CHF":1.13,"SGD":1.72,"AED":4.57,"CNY":9.1,"GBP":1},
+  "JPY":{"USD":0.0067,"INR":0.56,"EUR":0.0062,"GBP":0.0054,"CAD":0.0093,"AUD":0.010,"CHF":0.0061,"SGD":0.0093,"AED":0.025,"CNY":0.049,"JPY":1},
+  "CAD":{"USD":0.74,"INR":61,"EUR":0.68,"GBP":0.58,"JPY":108,"AUD":1.12,"CHF":0.66,"SGD":1.00,"AED":2.70,"CNY":5.3,"CAD":1},
+  "AUD":{"USD":0.66,"INR":55,"EUR":0.61,"GBP":0.52,"JPY":96,"CAD":0.89,"CHF":0.59,"SGD":0.89,"AED":2.40,"CNY":4.7,"AUD":1},
+  "CHF":{"USD":1.11,"INR":91,"EUR":1.02,"GBP":0.89,"JPY":164,"CAD":1.51,"AUD":1.69,"SGD":1.50,"AED":4.05,"CNY":8.1,"CHF":1},
+  "SGD":{"USD":0.73,"INR":60,"EUR":0.67,"GBP":0.58,"JPY":107,"CAD":1.00,"AUD":1.12,"CHF":0.67,"AED":2.69,"CNY":5.2,"SGD":1},
+  "AED":{"USD":0.27,"INR":23,"EUR":0.25,"GBP":0.22,"JPY":40,"CAD":0.37,"AUD":0.42,"CHF":0.25,"SGD":0.37,"CNY":0.96,"AED":1},
+  "CNY":{"USD":0.14,"INR":11,"EUR":0.13,"GBP":0.11,"JPY":20,"CAD":0.19,"AUD":0.21,"CHF":0.12,"SGD":0.19,"AED":1.04,"CNY":1}
+};
+
+function convertCurrency(){
+  let amount = parseFloat(document.getElementById("amount").value);
+  let from = document.getElementById("fromCurrency").value;
+  let to = document.getElementById("toCurrency").value;
+  if(isNaN(amount) || amount<=0){
+    document.getElementById("result").innerText="Please enter a valid amount.";
+    return;
+  }
+  let rate = exchangeRates[from][to];
+  let converted = (amount*rate).toFixed(4);
+  document.getElementById("result").innerText=`${symbols[from]}${amount} ${from} = ${symbols[to]}${converted} ${to}`;
+}
+function swapCurrencies(){
+  let fromSelect = document.getElementById("fromCurrency");
+  let toSelect = document.getElementById("toCurrency");
+  let temp = fromSelect.value;
+  fromSelect.value = toSelect.value;
+  toSelect.value = temp;
+  updateSymbol();
+}
+function updateSymbol(){
+  let from = document.getElementById("fromCurrency").value;
+  document.getElementById("currencySymbol").innerText = symbols[from];
+}
+function toggleTheme(){
+  let body=document.body;
+  let btn=document.querySelector(".theme-toggle");
+  if(body.getAttribute("data-theme")==="light"){
+    body.setAttribute("data-theme","dark");
+    btn.innerText="☀️";
+  } else {
+    body.setAttribute("data-theme","light");
+    btn.innerText="🌙";
+  }
+}
+</script>
+</body>
+</html>
